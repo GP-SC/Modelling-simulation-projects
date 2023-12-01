@@ -26,3 +26,9 @@ E:\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\Inve
 E:\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventoryModels\obj\Debug\InventoryModels.csproj.CoreCompileInputs.cache
 E:\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventoryModels\obj\Debug\InventoryModels.dll
 E:\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventoryModels\obj\Debug\InventoryModels.pdb
+C:\Users\Dell\Documents\GitHub\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventoryModels\bin\Debug\InventoryModels.dll
+C:\Users\Dell\Documents\GitHub\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventoryModels\bin\Debug\InventoryModels.pdb
+C:\Users\Dell\Documents\GitHub\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventoryModels\obj\Debug\InventoryModels.csproj.AssemblyReference.cache
+C:\Users\Dell\Documents\GitHub\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventoryModels\obj\Debug\InventoryModels.csproj.CoreCompileInputs.cache
+C:\Users\Dell\Documents\GitHub\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventoryModels\obj\Debug\InventoryModels.dll
+C:\Users\Dell\Documents\GitHub\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventoryModels\obj\Debug\InventoryModels.pdb

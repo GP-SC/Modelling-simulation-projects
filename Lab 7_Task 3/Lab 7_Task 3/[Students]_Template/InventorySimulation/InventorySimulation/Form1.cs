@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using InventoryModels;
 using InventoryTesting;
 
 namespace InventorySimulation
@@ -22,6 +23,7 @@ namespace InventorySimulation
         public static int StartOrderQuantity;
         public static int NumberOfDays;
         public static DataTable GlobTable;
+       
         public Form1()
         {
             InitializeComponent();
@@ -38,11 +40,11 @@ namespace InventorySimulation
             table.Columns.Add("Demand", typeof(int));
             table.Columns.Add("Demand Probability", typeof(decimal));
             table.Columns.Add("Demand Cummulative Probability", typeof(decimal));
-            table.Columns.Add("Demand Random Digit Assignment\r\n", typeof((int, int)));
+            table.Columns.Add("Demand Range\r\n", typeof((int, int)));
             table.Columns.Add("Lead Time (Days)\r\n", typeof(int));
-            table.Columns.Add("Days Probability", typeof(decimal));
-            table.Columns.Add("DaysCumulative Probability\r\n", typeof(decimal));
-            table.Columns.Add("Days Random Digit Assignment\r\n", typeof((int, int)));
+            table.Columns.Add("Lead Time Probability", typeof(decimal));
+            table.Columns.Add("Lead Time Cumulative Probability\r\n", typeof(decimal));
+            table.Columns.Add("Lead Time Range\r\n", typeof((int, int)));
            
         }
 
@@ -97,7 +99,7 @@ namespace InventorySimulation
                 }
                 else if (!isDayTypeSection && line.Contains(","))
                 {
-                    /*ProcessDemandLine(line, ref cummulativeProbabilityGood, ref cummulativeProbabilityFair, ref cummulativeProbabilityPoor, ref rowCount);*/
+                   ProcessDemandLine(line,ref cummulativeProbabilitylead,ref rowCount);
                 }
             }
 
@@ -108,8 +110,9 @@ namespace InventorySimulation
         {
             string[] values = line.Split(',');
             decimal demand = int.Parse(values[0]);
+            
             UpdateDemandProbabilities(values, ref cummProb);
-          //  UpdateTableRow(rowCount, demand, cummProb,  values);
+         /*  UpdateTableRow(rowCount, demand, cummProb,  values);*/
             rowCount++;
             if (rowCount > 2) table.Rows.Add();
         }
@@ -122,8 +125,8 @@ namespace InventorySimulation
 
         private void UpdateTableRow(int row, decimal demand, decimal cummProb, string[] values)
         {
-            table.Rows[row][4] = demand;
-            table.Rows[row][5] = cummProb;
+            table.Rows[row][1] = demand;
+            table.Rows[row][2] = cummProb;
             /*table.Rows[row][6] = cummProbFair;
             table.Rows[row][7] = cummProbPoor;*/
            // table.Rows[row][8] = CreateRange(cummProbGood, values[1]);
@@ -150,6 +153,8 @@ namespace InventorySimulation
 
             NumberOfDays = int.Parse(lines[16]);
             noDays_txtbox.Text = NumberOfDays.ToString();
+
+            
         }
     }
 }
