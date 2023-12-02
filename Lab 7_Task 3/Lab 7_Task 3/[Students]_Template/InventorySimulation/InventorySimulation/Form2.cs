@@ -62,5 +62,11 @@ namespace InventorySimulation
 
             dataGridView1.DataSource = table2;
         }
+
+        private void PM_btn_Click(object sender, EventArgs e)
+        {
+            Form3 form3 = new Form3();
+            form3.Show();
+        }
     }
 }
