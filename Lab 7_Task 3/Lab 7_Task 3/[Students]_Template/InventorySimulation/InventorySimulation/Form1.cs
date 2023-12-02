@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using InventoryModels;
 using InventoryTesting;
+using static System.Collections.Specialized.BitVector32;
 
 namespace InventorySimulation
 {
@@ -72,10 +73,10 @@ namespace InventorySimulation
         private void ProcessFileLines(string[] lines)
         {
             bool isDayTypeSection = false;
-            decimal cummulativeProbability = 0;
+            decimal cummulativeProbabilityD = 0;
             decimal cummulativeProbabilitylead = 0;
-          
-           
+            int section = 0;
+
             int rowCount = 0;
 
             foreach (string line in lines)
@@ -88,54 +89,43 @@ namespace InventorySimulation
 
                 if (isDayTypeSection && line.Contains(","))
                 {
-                    ProcessDemandLine(line, ref cummulativeProbability, ref rowCount);
+                    string[] values = line.Split(',');
+                    cummulativeProbabilityD = decimal.Parse(values[1]) + cummulativeProbabilityD;
+                    (int, int) interval = ((int)((cummulativeProbabilityD - decimal.Parse(values[1])) * 100) + 1, (int)(cummulativeProbabilityD * 100));
+                    table.Rows.Add(values[0], values[1], cummulativeProbabilityD, interval);
 
-                   /*ProcessDemandLine(line, ref cummulativeProbability);*/
+                    /*ProcessDemandLine(line, ref cummulativeProbability);*/
                 }
                 else if (line.StartsWith("LeadDaysDistribution"))
                 {
                     isDayTypeSection = false;
-                    cummulativeProbability = 0;
+                    cummulativeProbabilitylead = 0;
+                    //section = int.Parse(line.Substring(line.Length - 1));
                 }
                 else if (!isDayTypeSection && line.Contains(","))
                 {
-                   ProcessDemandLine(line,ref cummulativeProbabilitylead,ref rowCount);
+                    string[] values = line.Split(',');
+                    decimal value1 = decimal.Parse(values[0]);
+                    decimal value2 = decimal.Parse(values[1]);
+                    table.Rows[rowCount][4 ] = value1;
+                    table.Rows[rowCount][5] = value2;
+                    cummulativeProbabilitylead = value2 + cummulativeProbabilitylead;
+                    table.Rows[rowCount][6] = cummulativeProbabilitylead;
+                    table.Rows[rowCount][7] = ((int)((cummulativeProbabilitylead - value2) * 100) + 1, (int)(cummulativeProbabilitylead * 100));
+                    rowCount++;
+                    // ProcessDemandLine(line,ref cummulativeProbabilitylead,ref rowCount);
                 }
             }
 
             ProcessTextBoxes(lines);
+            GlobTable = table;
         }
      
-        private void ProcessDemandLine(string line, ref decimal cummProb, ref int rowCount)
-        {
-            string[] values = line.Split(',');
-            decimal demand = int.Parse(values[0]);
-            
-            UpdateDemandProbabilities(values, ref cummProb);
-         /*  UpdateTableRow(rowCount, demand, cummProb,  values);*/
-            rowCount++;
-            if (rowCount > 2) table.Rows.Add();
-        }
-        private void UpdateDemandProbabilities(string[] values, ref decimal cummProbGood)
-        {
-            cummProbGood += decimal.Parse(values[1]);
-           /* cummProbFair += decimal.Parse(values[2]);
-            cummProbPoor += decimal.Parse(values[3]);*/
-        }
+    
 
-        private void UpdateTableRow(int row, decimal demand, decimal cummProb, string[] values)
-        {
-            table.Rows[row][1] = demand;
-            table.Rows[row][2] = cummProb;
-            /*table.Rows[row][6] = cummProbFair;
-            table.Rows[row][7] = cummProbPoor;*/
-           // table.Rows[row][8] = CreateRange(cummProbGood, values[1]);
       
-        }
         private void ProcessTextBoxes(string[] lines)
         {
- 
-
             OrderUpTo = int.Parse(lines[1]);
             m_txtbox.Text = OrderUpTo.ToString();
 
