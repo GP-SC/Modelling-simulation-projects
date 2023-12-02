@@ -177,6 +177,7 @@
             this.sim_btn.TabIndex = 14;
             this.sim_btn.Text = "simulation table";
             this.sim_btn.UseVisualStyleBackColor = true;
+            this.sim_btn.Click += new System.EventHandler(this.sim_btn_Click);
             // 
             // Browse_TB
             // 
