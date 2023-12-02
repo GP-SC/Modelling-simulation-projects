@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using static InventorySimulation.Form1;
 using System.Data;
 using static InventorySimulation.Program;
+using System.Data.SqlTypes;
+
 namespace InventorySimulation
 {
      public class Build
@@ -15,7 +17,8 @@ namespace InventorySimulation
         {
 
             List<Distribution> result = new List<Distribution>();
-            for (int i = 0; i < simulationSystem.NumberOfDays; i++)
+            int n = GlobTable.Rows.Count;
+            for (int i = 0; i < GlobTable.Rows.Count; i++)
             {
                 Distribution currentDay = new Distribution();
                 currentDay.Value = i;
@@ -33,12 +36,12 @@ namespace InventorySimulation
         {
 
             List<Distribution> result = new List<Distribution>();
-            for (int i = 0; i < simulationSystem.NumberOfDays; i++)
+            for (int i = 1; i < 3; i++)
             {
                 Distribution currentDay = new Distribution();
                 currentDay.Value = i;
                 currentDay.Probability = GlobTable.Rows[i].Field<decimal>("Lead Time Probability");
-                currentDay.CummProbability = GlobTable.Rows[i].Field<decimal>("Lead Time Cummulative Probability");
+                currentDay.CummProbability = GlobTable.Rows[i].Field<decimal>("Lead Time Cumulative Probability");
                 (int, int) tmp = GlobTable.Rows[i].Field<(int, int)>("Lead Time Range");
                 currentDay.MaxRange = tmp.Item2;
                 currentDay.MinRange = tmp.Item1;
@@ -53,8 +56,8 @@ namespace InventorySimulation
 
             Random rand = new Random();
           
-            List<Distribution> demand = buildDemand();
-            List<Distribution> LeadTime = buildLeadTime();
+            List<Distribution> demand = new List<Distribution>(buildDemand());
+            List<Distribution> LeadTime = new List<Distribution> (buildLeadTime());
             genertor gen = new genertor();
             List<SimulationCase> ans = new List<SimulationCase>();
             SimulationCase current = new SimulationCase();
@@ -74,8 +77,8 @@ namespace InventorySimulation
                     current.ShortageQuantity = 0;
                 }
 
-                int randNumber1 = rand.Next(1, 100);
-                int randNumber2 = rand.Next(1, 10);
+                int randNumber1 = rand.Next(1, 101);
+                int randNumber2 = rand.Next(1, 11);
 
                 current.RandomDemand = randNumber1;
                 current.RandomLeadDays = randNumber2;
@@ -99,7 +102,6 @@ namespace InventorySimulation
             }
             simulationSystem.DemandDistribution = demand;
             simulationSystem.LeadDaysDistribution = LeadTime;
-
             simulationSystem.PerformanceMeasures.EndingInventoryAverage = endInventorySum / (decimal)simulationSystem.NumberOfDays;
             simulationSystem.PerformanceMeasures.ShortageQuantityAverage = shortageSum / (decimal)simulationSystem.NumberOfDays;
 

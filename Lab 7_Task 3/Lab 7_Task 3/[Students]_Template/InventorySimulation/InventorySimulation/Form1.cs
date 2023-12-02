@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using InventoryModels;
 using InventoryTesting;
 using static System.Collections.Specialized.BitVector32;
+using static InventorySimulation.Program;
 
 namespace InventorySimulation
 {
@@ -23,7 +24,7 @@ namespace InventorySimulation
         public static int StartLeadDays;
         public static int StartOrderQuantity;
         public static int NumberOfDays;
-        public static DataTable GlobTable;
+        public static DataTable GlobTable = new DataTable();
        
         public Form1()
         {
@@ -41,11 +42,11 @@ namespace InventorySimulation
             table.Columns.Add("Demand", typeof(int));
             table.Columns.Add("Demand Probability", typeof(decimal));
             table.Columns.Add("Demand Cummulative Probability", typeof(decimal));
-            table.Columns.Add("Demand Range\r\n", typeof((int, int)));
-            table.Columns.Add("Lead Time (Days)\r\n", typeof(int));
+            table.Columns.Add("Demand Range", typeof((int, int)));
+            table.Columns.Add("Lead Time (Days)", typeof(int));
             table.Columns.Add("Lead Time Probability", typeof(decimal));
-            table.Columns.Add("Lead Time Cumulative Probability\r\n", typeof(decimal));
-            table.Columns.Add("Lead Time Range\r\n", typeof((int, int)));
+            table.Columns.Add("Lead Time Cumulative Probability", typeof(decimal));
+            table.Columns.Add("Lead Time Range", typeof((int, int)));
            
         }
 
@@ -149,6 +150,7 @@ namespace InventorySimulation
 
         private void sim_btn_Click(object sender, EventArgs e)
         {
+            setAnswer();
             Form2 form2 = new Form2();
             form2.Show();
         }

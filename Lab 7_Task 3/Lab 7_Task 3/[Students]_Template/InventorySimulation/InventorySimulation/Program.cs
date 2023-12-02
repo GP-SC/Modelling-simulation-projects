@@ -37,9 +37,9 @@ namespace InventorySimulation
             simulationSystem.StartLeadDays = StartLeadDays;
             simulationSystem.StartOrderQuantity = StartOrderQuantity;
             simulationSystem.OrderUpTo = OrderUpTo;
-            simulationSystem.SimulationTable = b.Run();
+            simulationSystem.SimulationTable = new List<SimulationCase>(b.Run());
         }
         
-       
+     
     }
 }

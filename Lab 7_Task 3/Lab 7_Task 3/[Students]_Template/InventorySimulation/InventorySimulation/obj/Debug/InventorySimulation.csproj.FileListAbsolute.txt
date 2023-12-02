@@ -99,3 +99,5 @@ C:\Users\Dell\Documents\GitHub\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Tas
 C:\Users\Dell\Documents\GitHub\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventorySimulation\obj\Debug\InventorySimulation.pdb
 E:\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventorySimulation\obj\Debug\InventorySimulation.Form2.resources
 E:\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventorySimulation\obj\Debug\InventorySimulation.Form3.resources
+C:\Users\Dell\Documents\GitHub\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventorySimulation\obj\Debug\InventorySimulation.Form2.resources
+C:\Users\Dell\Documents\GitHub\Modelling-simulation-Tasks\Lab 7_Task 3\Lab 7_Task 3\[Students]_Template\InventorySimulation\InventorySimulation\obj\Debug\InventorySimulation.Form3.resources
