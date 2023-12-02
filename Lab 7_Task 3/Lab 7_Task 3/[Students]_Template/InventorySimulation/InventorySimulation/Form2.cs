@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static InventorySimulation.Program;
+
 
 namespace InventorySimulation
 {
@@ -33,32 +35,25 @@ namespace InventorySimulation
             table2.Columns.Add("Lead Time\r\n", typeof(int));
             table2.Columns.Add("Days until Order arrives\r\n", typeof(int));
             // gahndy hena hatstagdm el class el enta 3amlt fill data and calculation on it
-            /* for (int i = 0; i < customers.Count; i++)
-             {
-                 //table2.Rows[i][0] = customers[i].CustomerNumber;
-                 //table2.Rows[i][1] = customers[i].RandomInterArrival;
-                 //table2.Rows[i][2] = customers[i].InterArrival;
-                 //table2.Rows[i][3] = customers[i].ArrivalTime;
-                 //table2.Rows[i][4] = customers[i].RandomService;
-                 //table2.Rows[i][5] = customers[i].AssignedServer.ID;
-                 //table2.Rows[i][6] = customers[i].StartTime;
-                 //table2.Rows[i][7] = customers[i].ServiceTime;
-                 //table2.Rows[i][8] = customers[i].EndTime;
-                 //table2.Rows[i][9] = customers[i].TimeInQueue;
-                 table2.Rows.Add(
-                          customers[i].CustomerNumber,
-                          customers[i].RandomInterArrival,
-                          customers[i].InterArrival,
-                          customers[i].ArrivalTime,
-                          customers[i].RandomService,
-                          customers[i].AssignedServer.ID,
-                          customers[i].StartTime,
-                          customers[i].ServiceTime,
-                          customers[i].EndTime,
-                          customers[i].TimeInQueue
-                                                       );
-                 Console.WriteLine($"Customer {i} //////////////////////////");
-             }*/
+            for (int i = 0; i <simulationSystem.SimulationTable.Count; i++)
+            {
+               
+                table2.Rows.Add(
+                         simulationSystem.SimulationTable[i].Day,
+                         simulationSystem.SimulationTable[i].Cycle,
+                         simulationSystem.SimulationTable[i].DayWithinCycle,
+                         simulationSystem.SimulationTable[i].BeginningInventory,
+                         simulationSystem.SimulationTable[i].RandomDemand,
+                         simulationSystem.SimulationTable[i].Demand,
+                         simulationSystem.SimulationTable[i].EndingInventory,
+                         simulationSystem.SimulationTable[i].ShortageQuantity,
+                         simulationSystem.SimulationTable[i].OrderQuantity,
+                         simulationSystem.SimulationTable[i].RandomLeadDays,
+                         simulationSystem.SimulationTable[i].LeadDays,
+                         simulationSystem.SimulationTable[i].Day // hena feeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeh haga nasa
+                                );
+                Console.WriteLine($"Customer {i} //////////////////////////");
+            }
 
             dataGridView1.DataSource = table2;
         }
