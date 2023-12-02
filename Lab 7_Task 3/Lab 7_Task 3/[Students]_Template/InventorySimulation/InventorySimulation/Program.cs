@@ -30,13 +30,14 @@ namespace InventorySimulation
         }
          public static  void setAnswer()
         {
-            Build b = new Build();
+           
             simulationSystem.NumberOfDays = NumberOfDays;
             simulationSystem.ReviewPeriod = ReviewPeriod;
             simulationSystem.StartInventoryQuantity = StartInventoryQuantity;
             simulationSystem.StartLeadDays = StartLeadDays;
             simulationSystem.StartOrderQuantity = StartOrderQuantity;
             simulationSystem.OrderUpTo = OrderUpTo;
+            Build b = new Build();
             simulationSystem.SimulationTable = new List<SimulationCase>(b.Run());
         }
         

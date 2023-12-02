@@ -17,14 +17,14 @@ namespace InventorySimulation
 {
     public partial class Form1 : Form
     {
-        DataTable table = new DataTable();
+        public DataTable table = new DataTable();
         public static int OrderUpTo;
         public static int ReviewPeriod;
         public static int StartInventoryQuantity;
         public static int StartLeadDays;
         public static int StartOrderQuantity;
         public static int NumberOfDays;
-        public static DataTable GlobTable = new DataTable();
+        public static DataTable GlobTable;
        
         public Form1()
         {
@@ -144,8 +144,8 @@ namespace InventorySimulation
 
             NumberOfDays = int.Parse(lines[16]);
             noDays_txtbox.Text = NumberOfDays.ToString();
+           
 
-            
         }
 
         private void sim_btn_Click(object sender, EventArgs e)

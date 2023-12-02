@@ -10,7 +10,7 @@ namespace InventoryModels
     {
 
        
-       
+        public genertor() { }
          public int getDemand(int randomNum ,ref List<Distribution> dist)
         {
 
