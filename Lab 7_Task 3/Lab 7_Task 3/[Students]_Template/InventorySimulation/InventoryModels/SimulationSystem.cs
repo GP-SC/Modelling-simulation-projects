@@ -26,6 +26,7 @@ namespace InventoryModels
         public int StartOrderQuantity { get; set; }
         public List<Distribution> DemandDistribution { get; set; }
         public List<Distribution> LeadDaysDistribution { get; set; }
+        
 
         ///////////// OUTPUTS /////////////
 

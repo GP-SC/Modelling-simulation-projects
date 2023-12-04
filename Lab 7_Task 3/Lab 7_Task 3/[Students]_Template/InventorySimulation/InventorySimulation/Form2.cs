@@ -50,7 +50,7 @@ namespace InventorySimulation
                          simulationSystem.SimulationTable[i].OrderQuantity,
                          simulationSystem.SimulationTable[i].RandomLeadDays,
                          simulationSystem.SimulationTable[i].LeadDays,
-                         simulationSystem.SimulationTable[i].Day // hena feeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeh haga nasa
+                         simulationSystem.SimulationTable[i].dayuntil // hena feeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeh haga nasa
                                 );
                 Console.WriteLine($"Customer {i} //////////////////////////");
             }

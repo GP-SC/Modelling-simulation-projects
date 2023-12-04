@@ -15,7 +15,7 @@ namespace InventorySimulation
      public class Build
     {
         public Build() { }
-        public List<Distribution> buildDemand()
+        /*public List<Distribution> buildDemand()
         {
 
            
@@ -35,8 +35,8 @@ namespace InventorySimulation
             }
 
             return result;
-        }
-        public List<Distribution> buildLeadTime()
+        }*/
+       /* public List<Distribution> buildLeadTime()
         {
 
             List<Distribution> result = new List<Distribution>();
@@ -53,15 +53,15 @@ namespace InventorySimulation
             }
 
             return result;
-        }
+        }*/
         public List<SimulationCase> Run()
         {
 
 
             Random rand = new Random();
           
-            List<Distribution> demand = new List<Distribution>(buildDemand());
-            List<Distribution> LeadTime = new List<Distribution> (buildLeadTime());
+            List<Distribution> demand = new List<Distribution>();
+            List<Distribution> LeadTime = new List<Distribution> ();
             genertor gen = new genertor();
             List<SimulationCase> ans = new List<SimulationCase>();
 

@@ -150,7 +150,7 @@ namespace InventorySimulation
 
         private void sim_btn_Click(object sender, EventArgs e)
         {
-            setAnswer();
+            Nmain();
             Form2 form2 = new Form2();
             form2.Show();
         }
