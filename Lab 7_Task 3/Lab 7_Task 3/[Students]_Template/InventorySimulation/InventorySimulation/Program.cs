@@ -11,7 +11,6 @@ namespace InventorySimulation
 {
     internal static class Program
     {
-        public static SimulationSystem simulationSystem = new SimulationSystem();
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -24,17 +23,30 @@ namespace InventorySimulation
             Application.Run(new Form1());
         }
 
-        public static void Nmain()
+        public static SimulationSystem Nmain()
         {
-            setAnswer();
-            fillDemands();
-            fillLead();
-            simtable();
-            string result = TestingManager.Test(simulationSystem, Constants.FileNames.TestCase1);
+            SimulationSystem simulationSystem = new SimulationSystem();
+            setAnswer(simulationSystem);
+            fillDemands(simulationSystem);
+            fillLead(simulationSystem);
+            simtable(simulationSystem);
+            string testCase = "";
+
+            if (path.EndsWith("TestCase1.txt"))
+            {
+                testCase = Constants.FileNames.TestCase1;
+            }
+            else if (path.EndsWith("TestCase2.txt"))
+            {
+                testCase = Constants.FileNames.TestCase2;
+            }
+
+            string result = TestingManager.Test(simulationSystem, testCase);
             MessageBox.Show(result);
+            return simulationSystem;
         }
 
-        public static void setAnswer()
+        public static void setAnswer(SimulationSystem simulationSystem)
         {
             simulationSystem.NumberOfDays = NumberOfDays;
             simulationSystem.ReviewPeriod = ReviewPeriod;
@@ -44,7 +56,7 @@ namespace InventorySimulation
             simulationSystem.OrderUpTo = OrderUpTo;
         }
 
-        private static void fillDemands()
+        private static void fillDemands(SimulationSystem simulationSystem)
         {
             for (int row = 0; row < GlobTable.Rows.Count; row++)
             {
@@ -63,7 +75,7 @@ namespace InventorySimulation
             }
         }
 
-        private static void fillLead()
+        private static void fillLead(SimulationSystem simulationSystem)
         {
             for (int row = 0; row < GlobTable.Rows.Count; row++)
             {
@@ -82,29 +94,7 @@ namespace InventorySimulation
             }
         }
 
-        private static int getDemands(int randomTime)
-        {
-            List<Distribution> tmp = simulationSystem.DemandDistribution;
-            for (int i = 0; i < tmp.Count; i++)
-            {
-                if (tmp[i].MinRange <= randomTime && tmp[i].MaxRange >= randomTime)
-                    return tmp[i].Value;
-            }
-            return -1;
-        }
-
-        private static int getLeads(int randomTime)
-        {
-            List<Distribution> tmp = simulationSystem.LeadDaysDistribution;
-            for (int i = 0; i < tmp.Count; i++)
-            {
-                if ((tmp[i].MinRange / 10) <= randomTime && (tmp[i].MaxRange / 10) >= randomTime)
-                    return tmp[i].Value;
-            }
-            return -1;
-        }
-
-        private static void simtable()
+        private static void simtable(SimulationSystem simulationSystem)
         {
             Random rndI = new Random();
             Random rndS = new Random();

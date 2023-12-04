@@ -14,9 +14,12 @@ namespace InventorySimulation
 {
     public partial class Form3 : Form
     {
-        public Form3()
+        private SimulationSystem simulationSystem;
+
+        public Form3(SimulationSystem simulationSystem)
         {
             InitializeComponent();
+            this.simulationSystem = simulationSystem;
         }
 
         private void Form3_Load(object sender, EventArgs e)

@@ -54,7 +54,7 @@ namespace InventorySimulation
 
             return result;
         }*/
-        public List<SimulationCase> Run()
+        public List<SimulationCase> Run(SimulationSystem simulationSystem)
         {
 
 

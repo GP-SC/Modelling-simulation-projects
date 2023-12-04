@@ -25,7 +25,9 @@ namespace InventorySimulation
         public static int StartOrderQuantity;
         public static int NumberOfDays;
         public static DataTable GlobTable;
-       
+        public static string path;
+        int count = 0;
+
         public Form1()
         {
             InitializeComponent();
@@ -55,6 +57,7 @@ namespace InventorySimulation
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 Browse_TB.Text = openFileDialog1.FileName;
+                path = Browse_TB.Text;
             }
         }
 
@@ -65,10 +68,12 @@ namespace InventorySimulation
                 MessageBox.Show("No file is found!");
                 return;
             }
+            if (count > 0) GlobTable.Rows.Clear();
 
             string[] lines = File.ReadAllLines(Browse_TB.Text);
             ProcessFileLines(lines);
             GlobTable = table;
+            count++;
             /*path = Path.GetFileNameWithoutExtension(Browse_TB.Text);*/
         }
         private void ProcessFileLines(string[] lines)
@@ -150,8 +155,8 @@ namespace InventorySimulation
 
         private void sim_btn_Click(object sender, EventArgs e)
         {
-            Nmain();
-            Form2 form2 = new Form2();
+            SimulationSystem s = Nmain();
+            Form2 form2 = new Form2(s);
             form2.Show();
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InventoryModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,9 +15,13 @@ namespace InventorySimulation
 {
     public partial class Form2 : Form
     {
-        public Form2()
+        private SimulationSystem simulationSystem;
+
+        public Form2(SimulationSystem simulationSystem)
         {
             InitializeComponent();
+
+            this.simulationSystem = simulationSystem;
         }
         DataTable table2 = new DataTable();
 
@@ -60,7 +65,7 @@ namespace InventorySimulation
 
         private void PM_btn_Click(object sender, EventArgs e)
         {
-            Form3 form3 = new Form3();
+            Form3 form3 = new Form3(simulationSystem);
             form3.Show();
         }
     }
