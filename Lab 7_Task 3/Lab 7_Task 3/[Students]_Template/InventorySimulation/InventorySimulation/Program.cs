@@ -1,33 +1,28 @@
-﻿using System;
+﻿using InventoryModels;
+using InventoryTesting;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using InventoryModels;
-using InventoryTesting;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 using static InventorySimulation.Form1;
+
 namespace InventorySimulation
 {
-    static class Program
+    internal static class Program
     {
-
         public static SimulationSystem simulationSystem = new SimulationSystem();
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
 
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
-
         }
+
         public static void Nmain()
         {
             setAnswer();
@@ -37,9 +32,9 @@ namespace InventorySimulation
             string result = TestingManager.Test(simulationSystem, Constants.FileNames.TestCase1);
             MessageBox.Show(result);
         }
+
         public static void setAnswer()
         {
-
             simulationSystem.NumberOfDays = NumberOfDays;
             simulationSystem.ReviewPeriod = ReviewPeriod;
             simulationSystem.StartInventoryQuantity = StartInventoryQuantity;
@@ -47,9 +42,9 @@ namespace InventorySimulation
             simulationSystem.StartOrderQuantity = StartOrderQuantity;
             simulationSystem.OrderUpTo = OrderUpTo;
         }
-        static void fillDemands()
-        {
 
+        private static void fillDemands()
+        {
             for (int row = 0; row < GlobTable.Rows.Count; row++)
             {
                 Distribution td = new Distribution();
@@ -65,11 +60,10 @@ namespace InventorySimulation
                 simulationSystem.DemandDistribution.Add(td);
                 if (td.MaxRange == 100) break;
             }
-
         }
-        static void fillLead()
-        {
 
+        private static void fillLead()
+        {
             for (int row = 0; row < GlobTable.Rows.Count; row++)
             {
                 Distribution td = new Distribution();
@@ -85,11 +79,10 @@ namespace InventorySimulation
                 simulationSystem.LeadDaysDistribution.Add(td);
                 if (td.MaxRange == 100) break;
             }
-
         }
-        static int getDemands(int randomTime)
-        {
 
+        private static int getDemands(int randomTime)
+        {
             List<Distribution> tmp = simulationSystem.DemandDistribution;
             for (int i = 0; i < tmp.Count; i++)
             {
@@ -98,18 +91,19 @@ namespace InventorySimulation
             }
             return -1;
         }
-        static int getLeads(int randomTime)
-        {
 
+        private static int getLeads(int randomTime)
+        {
             List<Distribution> tmp = simulationSystem.LeadDaysDistribution;
             for (int i = 0; i < tmp.Count; i++)
             {
-                if ((tmp[i].MinRange /10) <= randomTime && (tmp[i].MaxRange /10) >= randomTime)
+                if ((tmp[i].MinRange / 10) <= randomTime && (tmp[i].MaxRange / 10) >= randomTime)
                     return tmp[i].Value;
             }
             return -1;
         }
-        static void simtable()
+
+        private static void simtable()
         {
             Random rndI = new Random();
             Random rndS = new Random();
@@ -130,6 +124,8 @@ namespace InventorySimulation
             int inventory = simulationSystem.StartInventoryQuantity;
             decimal shortageSum = 0;
             decimal endInventorySum = 0;
+            int dayuntil = 0;
+            int flag = 0;
             for (int i = 1; i <= n; i++)
             {
                 SimulationCase current = new SimulationCase();
@@ -140,28 +136,43 @@ namespace InventorySimulation
 
                 current.Day = i;
                 current.Cycle = cylce;
-                current.DayWithinCycle = (i % r) == 0 ? r : i ;
-                current.BeginningInventory = (i==1)?inventory :ans[i-1].EndingInventory; //
-                
-                if (i == simulationSystem.StartLeadDays)
+                current.DayWithinCycle = (i % r) == 0 ? r : i % r;
+                current.Demand = getDemands(randNumber1);
+
+                current.BeginningInventory = (i == 1) ? inventory : (ans[i - 2].EndingInventory); //
+                if (leadDay == i)
                 {
-                    inventory += order;
-                    shortage = 0;
-                    order = 0;
+                    current.BeginningInventory += order;
+                }
+                if(dayuntil >= 0)
+                {
+                    dayuntil--;
+                }
+                else
+                {
+                    current.BeginningInventory += ans[flag - 2].OrderQuantity;
+                    dayuntil++;
                 }
 
-                current.Demand = getDemands(randNumber1);
-                current.EndingInventory = current.BeginningInventory < current.Demand ? 0 : current.BeginningInventory-current.Demand;
+
+
+                if (i == 1)
+                    current.EndingInventory = current.BeginningInventory < current.Demand ? 0 : current.BeginningInventory - current.Demand;
+                else
+                    current.EndingInventory = current.BeginningInventory < current.Demand ? 0 : current.BeginningInventory - current.Demand - ans[i - 2].ShortageQuantity;
 
                 /* current.BeginningInventory -= current.Demand;*/
-                shortage = current.BeginningInventory >= current.Demand ? 0 : current.Demand- current.BeginningInventory;   ///
-                current.ShortageQuantity = shortage;
+                shortage = current.BeginningInventory >= current.Demand ? 0 : current.Demand - current.BeginningInventory;   ///
+                current.ShortageQuantity += shortage;
+
                 if (current.DayWithinCycle == r)
                 {
-                    current.OrderQuantity = m-current.EndingInventory+current.ShortageQuantity;
+                    current.OrderQuantity = m - current.EndingInventory + current.ShortageQuantity;
                     current.RandomLeadDays = randNumber2;
                     current.LeadDays = getLeads(randNumber2);
                     current.dayuntil = current.LeadDays;
+                    dayuntil = current.LeadDays;
+                    flag = i;
                 }
                 else
                 {
@@ -169,27 +180,23 @@ namespace InventorySimulation
                     current.RandomLeadDays = 0;
                     current.LeadDays = 0;
                 }
-                
 
                 endInventorySum += current.EndingInventory;
                 shortageSum += current.ShortageQuantity;
                 inventory = current.BeginningInventory;
-                
+
                 if (i % r == 0)
                 {
                     cylce++;
                     order = m - (current.EndingInventory + current.ShortageQuantity);
-                    leadDay = i + current.LeadDays;
                 }
                 ans.Add(current);
-
             }
             simulationSystem.SimulationTable = ans;
             simulationSystem.DemandDistribution = demand;
             simulationSystem.LeadDaysDistribution = LeadTime;
             simulationSystem.PerformanceMeasures.EndingInventoryAverage = endInventorySum / simulationSystem.NumberOfDays;
             simulationSystem.PerformanceMeasures.ShortageQuantityAverage = shortageSum / simulationSystem.NumberOfDays;
-
         }
     }
 }
