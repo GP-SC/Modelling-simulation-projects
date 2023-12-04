@@ -3,6 +3,7 @@ using InventoryTesting;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
 using static InventorySimulation.Form1;
 
@@ -107,17 +108,15 @@ namespace InventorySimulation
         {
             Random rndI = new Random();
             Random rndS = new Random();
-            int num = rndI.Next(1, 101);
-            int num2 = rndS.Next(1, 101);
             List<Distribution> demand = simulationSystem.DemandDistribution;
             List<Distribution> LeadTime = simulationSystem.LeadDaysDistribution;
-            genertor gen = new genertor();
             List<SimulationCase> ans = new List<SimulationCase>();
+            genertor gen = new genertor();
 
             int n = simulationSystem.NumberOfDays;
             int m = simulationSystem.OrderUpTo;
             int r = simulationSystem.ReviewPeriod;
-            int leadDay = simulationSystem.StartLeadDays + 1;
+            int leadDay = simulationSystem.StartLeadDays;
             int cylce = 1;
             int shortage = 0;
             int order = simulationSystem.StartOrderQuantity;
@@ -125,7 +124,8 @@ namespace InventorySimulation
             decimal shortageSum = 0;
             decimal endInventorySum = 0;
             int dayuntil = 0;
-            int flag = 0;
+            int addQuantityy = 0;
+
             for (int i = 1; i <= n; i++)
             {
                 SimulationCase current = new SimulationCase();
@@ -137,58 +137,56 @@ namespace InventorySimulation
                 current.Day = i;
                 current.Cycle = cylce;
                 current.DayWithinCycle = (i % r) == 0 ? r : i % r;
-                current.Demand = getDemands(randNumber1);
+                current.Demand = gen.getDemand(randNumber1, ref demand);
 
-                current.BeginningInventory = (i == 1) ? inventory : (ans[i - 2].EndingInventory); //
-                if (leadDay == i)
+                current.BeginningInventory = (i == 1) ? inventory : (ans[i - 2].EndingInventory);
+                if (leadDay > -1)
                 {
-                    current.BeginningInventory += order;
+                    leadDay--;
+                    if (leadDay == -1)
+                    {
+                        current.BeginningInventory += order;
+                    }
                 }
-                if(dayuntil >= 0)
+
+                if (dayuntil > -1)
                 {
                     dayuntil--;
+                    if (dayuntil == -1)
+                    {
+                        current.BeginningInventory += addQuantityy;
+                    }
                 }
-                else
+
+                current.EndingInventory = current.BeginningInventory < current.Demand ? 0 : current.BeginningInventory - current.Demand - shortage;
+                if (current.EndingInventory < 0)
                 {
-                    current.BeginningInventory += ans[flag - 2].OrderQuantity;
-                    dayuntil++;
+                    current.EndingInventory = 0;
+                    shortage = current.Demand + shortage - current.BeginningInventory;
                 }
-
-
-
-                if (i == 1)
-                    current.EndingInventory = current.BeginningInventory < current.Demand ? 0 : current.BeginningInventory - current.Demand;
                 else
-                    current.EndingInventory = current.BeginningInventory < current.Demand ? 0 : current.BeginningInventory - current.Demand - ans[i - 2].ShortageQuantity;
-
-                /* current.BeginningInventory -= current.Demand;*/
-                shortage = current.BeginningInventory >= current.Demand ? 0 : current.Demand - current.BeginningInventory;   ///
+                    shortage = current.BeginningInventory >= current.Demand ? 0 : current.Demand - current.BeginningInventory + shortage;
+                
                 current.ShortageQuantity += shortage;
 
-                if (current.DayWithinCycle == r)
+                endInventorySum += current.EndingInventory;
+
+                shortageSum += current.ShortageQuantity;
+
+                if (i % r == 0)
                 {
+                    cylce++;
                     current.OrderQuantity = m - current.EndingInventory + current.ShortageQuantity;
-                    current.RandomLeadDays = randNumber2;
-                    current.LeadDays = getLeads(randNumber2);
+                    addQuantityy = current.OrderQuantity;
+                    current.LeadDays = gen.getLeadTime(randNumber2, ref LeadTime);
                     current.dayuntil = current.LeadDays;
                     dayuntil = current.LeadDays;
-                    flag = i;
                 }
                 else
                 {
                     current.OrderQuantity = 0;
                     current.RandomLeadDays = 0;
                     current.LeadDays = 0;
-                }
-
-                endInventorySum += current.EndingInventory;
-                shortageSum += current.ShortageQuantity;
-                inventory = current.BeginningInventory;
-
-                if (i % r == 0)
-                {
-                    cylce++;
-                    order = m - (current.EndingInventory + current.ShortageQuantity);
                 }
                 ans.Add(current);
             }
