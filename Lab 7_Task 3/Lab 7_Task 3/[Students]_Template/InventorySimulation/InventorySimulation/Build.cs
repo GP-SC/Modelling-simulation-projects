@@ -15,55 +15,63 @@ namespace InventorySimulation
      public class Build
     {
         public Build() { }
-        /*public List<Distribution> buildDemand()
+        public  void setAnswer(ref SimulationSystem simulationSystem)
         {
+            simulationSystem.NumberOfDays = NumberOfDays;
+            simulationSystem.ReviewPeriod = ReviewPeriod;
+            simulationSystem.StartInventoryQuantity = StartInventoryQuantity;
+            simulationSystem.StartLeadDays = StartLeadDays;
+            simulationSystem.StartOrderQuantity = StartOrderQuantity;
+            simulationSystem.OrderUpTo = OrderUpTo;
+        }
 
-           
-            List<Distribution> result = new List<Distribution>();
-            int n = GlobTable.Rows.Count;
-            for (int i = 0; i < 5; i++)
+        public void buildDemands(ref SimulationSystem simulationSystem)
+        {
+            for (int row = 0; row < GlobTable.Rows.Count; row++)
             {
-               
-                Distribution currentDay = new Distribution();
-                currentDay.Value = GlobTable.Rows[i].Field<int>("Demand");
-                currentDay.Probability = GlobTable.Rows[i].Field<decimal>("Demand Probability");
-                currentDay.CummProbability = GlobTable.Rows[i].Field<decimal>("Demand Cummulative Probability");
-                (int, int) tmp = GlobTable.Rows[i].Field<(int, int)>("Demand Range");
-                currentDay.MaxRange = tmp.Item2;
-                currentDay.MinRange = tmp.Item1;
-                result.Add(currentDay);
+                Distribution td = new Distribution();
+                Console.WriteLine("-----------------------------------Output------------------------");
+                /*Console.WriteLine(GlobTable.Rows[row][day * 4] == null);*/
+                if (GlobTable.Rows[row].Field<int>("Demand").ToString() == "") break;
+                td.Value = GlobTable.Rows[row].Field<int>("Demand");
+                td.Probability = GlobTable.Rows[row].Field<decimal>("Demand Probability");
+                td.CummProbability = GlobTable.Rows[row].Field<decimal>("Demand Cummulative Probability");
+                (int, int) interval = GlobTable.Rows[row].Field<(int, int)>("Demand Range");
+                td.MinRange = interval.Item1;
+                td.MaxRange = interval.Item2;
+                simulationSystem.DemandDistribution.Add(td);
+                if (td.MaxRange == 100) break;
             }
+        }
 
-            return result;
-        }*/
-       /* public List<Distribution> buildLeadTime()
+        public void buildLead(ref SimulationSystem simulationSystem)
         {
-
-            List<Distribution> result = new List<Distribution>();
-            for (int i = 0; i < 3; i++)
+            for (int row = 0; row < GlobTable.Rows.Count; row++)
             {
-                Distribution currentDay = new Distribution();
-                currentDay.Value = GlobTable.Rows[i].Field<int>("Lead Time (Days)"); ;
-                currentDay.Probability = GlobTable.Rows[i].Field<decimal>("Lead Time Probability");
-                currentDay.CummProbability = GlobTable.Rows[i].Field<decimal>("Lead Time Cumulative Probability");
-                (int, int) tmp = GlobTable.Rows[i].Field<(int, int)>("Lead Time Range");
-                currentDay.MaxRange = tmp.Item2;
-                currentDay.MinRange = tmp.Item1;
-                result.Add(currentDay);
+                Distribution td = new Distribution();
+                Console.WriteLine("-----------------------------------Output------------------------");
+                /*Console.WriteLine(GlobTable.Rows[row][day * 4] == null);*/
+                if (GlobTable.Rows[row].Field<int>("Lead Time (Days)").ToString() == "") break;
+                td.Value = GlobTable.Rows[row].Field<int>("Lead Time (Days)");
+                td.Probability = GlobTable.Rows[row].Field<decimal>("Lead Time Probability");
+                td.CummProbability = GlobTable.Rows[row].Field<decimal>("Lead Time Cumulative Probability");
+                (int, int) interval = GlobTable.Rows[row].Field<(int, int)>("Lead Time Range");
+                td.MinRange = interval.Item1;
+                td.MaxRange = interval.Item2;
+                simulationSystem.LeadDaysDistribution.Add(td);
+                if (td.MaxRange == 100) break;
             }
-
-            return result;
-        }*/
-        public List<SimulationCase> Run(SimulationSystem simulationSystem)
+        }
+        public void Run(ref SimulationSystem simulationSystem)
         {
-
-
-            Random rand = new Random();
-          
-            List<Distribution> demand = new List<Distribution>();
-            List<Distribution> LeadTime = new List<Distribution> ();
+            buildLead(ref simulationSystem);
+            buildDemands(ref simulationSystem);
+            Random rndI = new Random();
+            Random rndS = new Random();
+            List<Distribution> demand = simulationSystem.DemandDistribution;
+            List<Distribution> LeadTime = simulationSystem.LeadDaysDistribution;
+            List<SimulationCase> answer = new List<SimulationCase>();
             genertor gen = new genertor();
-            List<SimulationCase> ans = new List<SimulationCase>();
 
             int n = simulationSystem.NumberOfDays;
             int m = simulationSystem.OrderUpTo;
@@ -75,51 +83,59 @@ namespace InventorySimulation
             int inventory = simulationSystem.StartInventoryQuantity;
             decimal shortageSum = 0;
             decimal endInventorySum = 0;
-           
-            for (int i = 1; i <= n; i++)
+        
+            for (int day = 1; day <= n; day++)
             {
                 SimulationCase current = new SimulationCase();
-                current.Cycle = cylce;
-                current.BeginningInventory = simulationSystem.StartInventoryQuantity;
-                if (i == leadDay)
-                {
-                    inventory += order;
-                    shortage = 0;
-                    order = 0;
-                }
-
-                int randNumber1 = rand.Next(1, 100);
-                int randNumber2 = rand.Next(1, 10);
-                current.BeginningInventory = inventory ;
+                int randNumber1 = rndI.Next(1, 100);
+                int randNumber2 = rndS.Next(1, 10);
                 current.RandomDemand = randNumber1;
                 current.RandomLeadDays = randNumber2;
-                current.LeadDays = gen.getLeadTime(randNumber2, ref LeadTime);
+
+                current.Day = day;
+                current.Cycle = cylce;
+                current.DayWithinCycle = (day % r) == 0 ? r : day % r;
                 current.Demand = gen.getDemand(randNumber1, ref demand);
-                current.Day = i;
-                current.DayWithinCycle = (i % r) == 0 ? r : i % r;
-                current.BeginningInventory -= current.Demand;
-                shortage = current.BeginningInventory >= 0 ? 0 : -current.BeginningInventory;
-                current.ShortageQuantity = shortage;
-                current.EndingInventory = current.BeginningInventory < 0 ? 0 : current.BeginningInventory;
+                current.BeginningInventory = (day == 1) ? inventory : (answer[day - 2].EndingInventory);
+
+                if (leadDay == day)
+                {
+                    current.BeginningInventory += order;
+                }
+
+
+                current.EndingInventory = current.BeginningInventory < current.Demand ? 0 : current.BeginningInventory - current.Demand - shortage;
+                if (current.EndingInventory < 0)
+                {
+                    shortage = current.Demand + shortage - current.BeginningInventory;
+                }
+                else
+                {
+                    shortage = current.BeginningInventory >= current.Demand ? 0 : current.Demand - current.BeginningInventory + shortage;
+                }
+                current.EndingInventory = Math.Max(0, current.EndingInventory);
+                current.ShortageQuantity += shortage;
+
                 endInventorySum += current.EndingInventory;
+
                 shortageSum += current.ShortageQuantity;
-                inventory = current.BeginningInventory;
-                current.OrderQuantity = order;  
-                if (i % r == 0)
+
+                if (day % r == 0)
                 {
                     cylce++;
-                    order = m - (current.EndingInventory + current.ShortageQuantity);
-                    leadDay = i + current.LeadDays;
+                    current.OrderQuantity = m - current.EndingInventory + current.ShortageQuantity;
+                    order = current.OrderQuantity;
+                    current.LeadDays = gen.getLeadTime(randNumber2, ref LeadTime);
+                    current.dayuntil = current.LeadDays;
+                    leadDay = day + 1 + current.LeadDays;
                 }
-                ans.Add(current);
-              
+                answer.Add(current);
             }
+            simulationSystem.SimulationTable = answer;
             simulationSystem.DemandDistribution = demand;
             simulationSystem.LeadDaysDistribution = LeadTime;
             simulationSystem.PerformanceMeasures.EndingInventoryAverage = endInventorySum / simulationSystem.NumberOfDays;
             simulationSystem.PerformanceMeasures.ShortageQuantityAverage = shortageSum / simulationSystem.NumberOfDays;
-
-            return ans;
         }
     }
 }
